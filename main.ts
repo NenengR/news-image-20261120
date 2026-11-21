@@ -166,8 +166,7 @@ for(let i=0;i<4;i++){
 }
 
 // write
-const outDir = process.argv[2];
-if(!outDir){ process.stderr.write("usage: node main.ts <outdir>\n"); process.exit(1); }
+const outDir = process.env.MAKEFUN_OUTPUT_DIR || process.argv[2] || "out";
 const png = encodePNG(W,H,fb);
 writeFileSync(outDir+"/entry.png", png);
 console.log("wrote "+outDir+"/entry.png "+png.length+" bytes");
