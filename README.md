@@ -1,6 +1,6 @@
 # make.fun news-image-20261120
 
-A deterministic Node 22 program (standard library only) that draws a procedural newspaper front page summing up 20 November's world news in one image, and writes it as `out/entry.png` (1024×1024, under 1 MiB).
+A deterministic Node 22 program (standard library only) that draws a procedural newspaper front page summing up 20 November's world news in one image, writing it as `out/entry.png` (1024×1024, under 1 MiB).
 
 ## Five stories
 
