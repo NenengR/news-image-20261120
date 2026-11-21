@@ -2,8 +2,8 @@ import * as fs from 'node:fs';
 import * as zlib from 'node:zlib';
 
 // Canvas size in pixels
-const CANVAS_W = 1024;
-const CANVAS_H = 1024;
+const CANVAS_W = 0x400;
+const CANVAS_H = 0x400;
 
 // RGB frame buffer, row-major
 const fb = Buffer.alloc(CANVAS_W * CANVAS_H * 3);
@@ -33,9 +33,9 @@ function block(x: number, y: number, w: number, h: number, r: number, g: number,
 }
 
 // Palette
-const COL_NAVY = [26, 42, 94];
-const COL_WHITE = [255, 255, 255];
-const COL_DARK = [20, 20, 20];
+const COL_NAVY = [0x1a, 0x2a, 0x5e];
+const COL_WHITE = [0xff, 0xff, 0xff];
+const COL_DARK = [0x14, 0x14, 0x14];
 
 // Embedded 5x7 bitmap font, 6 px advance per glyph. Mandated K, V, comma shapes.
 const GLYPH: Record<string, string[]> = {
@@ -137,38 +137,38 @@ function flow(text: string, x: number, y: number, maxWidth: number, scale: numbe
 // ---------------- Page composition ----------------
 
 // Draw the masthead band and date/title
-block(0, 0, CANVAS_W, 100, COL_NAVY[0], COL_NAVY[1], COL_NAVY[2]);
+block(0, 0, CANVAS_W, 0x64, COL_NAVY[0], COL_NAVY[1], COL_NAVY[2]);
 
 const dateLine = 'FRIDAY 20 NOVEMBER 2026';
-stamp(dateLine, (CANVAS_W - widthOf(dateLine, 3)) / 2, 18, 3, COL_WHITE[0], COL_WHITE[1], COL_WHITE[2]);
+stamp(dateLine, (CANVAS_W - widthOf(dateLine, 3)) / 2, 0x12, 3, COL_WHITE[0], COL_WHITE[1], COL_WHITE[2]);
 
 const mastHead = 'THE DAILY RECORD';
-stamp(mastHead, (CANVAS_W - widthOf(mastHead, 2)) / 2, 56, 2, COL_WHITE[0], COL_WHITE[1], COL_WHITE[2]);
+stamp(mastHead, (CANVAS_W - widthOf(mastHead, 2)) / 2, 0x38, 2, COL_WHITE[0], COL_WHITE[1], COL_WHITE[2]);
 
 // Lead panel: full-width navy background first, then white text on top
-block(0, 100, CANVAS_W, 250, COL_NAVY[0], COL_NAVY[1], COL_NAVY[2]);
-stamp('SUMMIT', 25, 130, 2, COL_WHITE[0], COL_WHITE[1], COL_WHITE[2]);
-const leadBottom = flow('TRUMP XI PUTIN SIGN PEACE PACT', 25, 160, CANVAS_W - 50, 4, COL_WHITE[0], COL_WHITE[1], COL_WHITE[2]);
-const leadSubY = leadBottom + 7 * 4 + 10;
-flow('DECLARATION AFTER SHENZHEN SUMMIT', 25, leadSubY, CANVAS_W - 50, 2, COL_WHITE[0], COL_WHITE[1], COL_WHITE[2]);
+block(0, 0x64, CANVAS_W, 0xfa, COL_NAVY[0], COL_NAVY[1], COL_NAVY[2]);
+stamp('SUMMIT', 0x19, 0x82, 2, COL_WHITE[0], COL_WHITE[1], COL_WHITE[2]);
+const leadBottom = flow('TRUMP XI PUTIN SIGN PEACE PACT', 0x19, 0xa0, CANVAS_W - 0x32, 4, COL_WHITE[0], COL_WHITE[1], COL_WHITE[2]);
+const leadSubY = leadBottom + 7 * 4 + 0xa;
+flow('DECLARATION AFTER SHENZHEN SUMMIT', 0x19, leadSubY, CANVAS_W - 0x32, 2, COL_WHITE[0], COL_WHITE[1], COL_WHITE[2]);
 
 // Four smaller story panels in a 2x2 grid
-const CARD_W = 482;
-const CARD_H = 285;
-const CARD_GAP = 20;
-const LEFT_X = 25;
-const RIGHT_X = 25 + CARD_W + CARD_GAP;
-const TOP_Y = 370;
-const BOTTOM_Y = 370 + CARD_H + CARD_GAP;
+const CARD_W = 0x1e2;
+const CARD_H = 0x11d;
+const CARD_GAP = 0x14;
+const LEFT_X = 0x19;
+const RIGHT_X = 0x19 + CARD_W + CARD_GAP;
+const TOP_Y = 0x172;
+const BOTTOM_Y = 0x172 + CARD_H + CARD_GAP;
 
 // Draw one story card: navy border, white interior, tag/headline/subhead in dark ink
 function card(x: number, y: number, tag: string, head: string, sub: string): void {
   block(x, y, CARD_W, CARD_H, COL_NAVY[0], COL_NAVY[1], COL_NAVY[2]);
   block(x + 2, y + 2, CARD_W - 4, CARD_H - 4, COL_WHITE[0], COL_WHITE[1], COL_WHITE[2]);
-  stamp(tag, x + 14, y + 14, 2, COL_DARK[0], COL_DARK[1], COL_DARK[2]);
-  const headEnd = flow(head, x + 14, y + 60, CARD_W - 28, 3, COL_DARK[0], COL_DARK[1], COL_DARK[2]);
+  stamp(tag, x + 0xe, y + 0xe, 2, COL_DARK[0], COL_DARK[1], COL_DARK[2]);
+  const headEnd = flow(head, x + 0xe, y + 0x3c, CARD_W - 0x1c, 3, COL_DARK[0], COL_DARK[1], COL_DARK[2]);
   const subY = headEnd + 7 * 3 + 6;
-  flow(sub, x + 14, subY, CARD_W - 28, 2, COL_DARK[0], COL_DARK[1], COL_DARK[2]);
+  flow(sub, x + 0xe, subY, CARD_W - 0x1c, 2, COL_DARK[0], COL_DARK[1], COL_DARK[2]);
 }
 
 card(LEFT_X, TOP_Y, 'UKRAINE', 'UK SENDS 1000 DRONES', '260 MILLION POUND AID PACKAGE');
@@ -177,9 +177,9 @@ card(LEFT_X, BOTTOM_Y, 'TECH', 'ANTHROPIC SOARS 34 PERCENT', '2 TRILLION DOLLAR 
 card(RIGHT_X, BOTTOM_Y, 'EUROPE', 'UK-EU YOUTH DEAL AGREED', 'MOBILITY SCHEME SEALED');
 
 // Bottom footer with date
-block(0, 985, CANVAS_W, 2, 0, 0, 0);
+block(0, 0x3d9, CANVAS_W, 2, 0, 0, 0);
 const footer = 'FIVE STORIES FROM FRIDAY 20 NOVEMBER 2026';
-stamp(footer, (CANVAS_W - widthOf(footer, 2)) / 2, 1002, 2, 0, 0, 0);
+stamp(footer, (CANVAS_W - widthOf(footer, 2)) / 2, 0x3ea, 2, 0, 0, 0);
 
 // ---------------- PNG encoding ----------------
 
@@ -216,7 +216,7 @@ function toPng(w: number, h: number, px: Buffer): Buffer {
     px.copy(raw, off + 1, y * rowBytes, y * rowBytes + rowBytes);
   }
   const idat = zlib.deflateSync(raw, { level: 9 });
-  const ihdr = Buffer.alloc(13);
+  const ihdr = Buffer.alloc(0xd);
   ihdr.writeUInt32BE(w, 0);
   ihdr.writeUInt32BE(h, 4);
   ihdr[8] = 8;
